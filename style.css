@@ -1,0 +1,24 @@
+.calculator{
+    display: flex;
+     align-items: center;
+    justify-content: center;
+}
+.contatiner {
+     width: 500px;
+    height: 500px;
+     display: grid;
+    grid-template-columns: repeat(4, 1fr);
+     border: solid;
+}
+.back {
+   grid-column-start: 1;
+  grid-column-end: 4;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+.cleaner {
+    grid-column-start: 4;
+  grid-column-end: 8;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}

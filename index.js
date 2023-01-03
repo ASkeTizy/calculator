@@ -1,13 +1,23 @@
 class Calculator {
+	static screen = document.getElementsByClassName('screen')[0];
 	stringParser(str) {
 		const numbers_reg = /([0-9.]+|[+-=/*])+?/g;
 		const numbers = str.match(numbers_reg);
 	 	const ans = this.operator(+numbers[0], +numbers[2], numbers[1]);
 	 	return this.numberChecker(ans);	
 	}
+	
 	numberChecker(number) {
 		if (Number.isInteger(number)) return number;
 		else return number.toFixed(2);
+	}
+	clickNumber() {
+		const buttons = document.getElementsByClassName('btn');
+		console.log(1);
+		[...buttons].forEach(button => button.addEventListener('click',(event) => {
+			console.log(1);
+				Calculator.screen.innerHTML = button.innerHTML;
+			}))
 	}
 	operator(num1, num2, operator) {
 		switch(operator) {
@@ -31,7 +41,11 @@ class Calculator {
 	}
 }
 function main() {
+	console.log(1);
 	const ans = new Calculator().stringParser("1/3");
-	console.log(ans);
+	new Calculator().clickNumber();
+	
+	
+	console.log(Calculator.screen);
 }
 main();

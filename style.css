@@ -5,9 +5,19 @@
     flex-direction: column;
 }
 .screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 60px;
+    padding: 25px 7px;
+    text-align: right;
+    font-size: 40px;
+    width: 400px;
     border: solid;
-    width: 410px;
+
+    border-color: #2196F3;
 }
+
 .contatiner { 
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -18,7 +28,7 @@
  height: 500px;
 }
 .contatiner > button {
-    background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.8);
   text-align: center;
   padding: 20px 0;
   font-size: 30px;

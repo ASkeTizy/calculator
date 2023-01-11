@@ -2,7 +2,8 @@ class Calculator {
 	static input_screen = document.getElementsByClassName('input_screen')[0];
 	static ans_screen = document.getElementsByClassName('ans_screen')[0];
 	static math_expression = '';
-
+	static first_number = '0';
+	static first_operator = '';
 	stringParser(str) {
 		const numbers_reg = /([0-9.]+|[+-=/*])+?/g;
 		const numbers = str.match(numbers_reg);
@@ -48,24 +49,37 @@ class Calculator {
 		});
 	}
 	inputChecker(button) {
+		if (Calculator.first_number.includes('.') && button == '.'){
+			Calculator.first_number += '';
+		} 
+		 else if(Calculator.first_number == '0' && button.match(/[0-9]/g)) {
 
-		let str = Calculator.math_expression;
-		if (str.match(/[0-9.]+|[+-/*]+[0-9.]+?/g) && button == '=')
-			Calculator.math_expression += button
-
-		else if (str.match(/[0-9.]+?/g) && button == '='){
-			Calculator.math_expression += '';
-			console.log(str.match(/[0-9.]+?/g));
-		} else if (str.match(/[.]+?/g) && button == '.') {
-
-			Calculator.math_expression += '';
-		}
-		else Calculator.math_expression += button;
-		
+				Calculator.first_number = button;
+				Calculator.input_screen.innerHTML = button; 
+		 } 
+			else if (button.match(/[-+/*]/g)) {
+				Calculator.first_operator = button;
+				Calculator.ans_screen.innerHTML = Calculator.first_number 
+									+ Calculator.first_operator;
+				Calculator.first_number = '0';
+				Calculator.input_screen.innerHTML = '0';					
+			}
+			if (Calculator.ans_screen.innerHTML != '' && button.match(/[-+/*=]/g) ) {
+				console.log(1);
+					 Calculator.first_number = this.stringParser(Calculator.ans_screen.innerHTML+Calculator.first_number);
+					Calculator.input_screeen = Calculator.first_number;
+			}
+			else {
+				Calculator.first_number += button;
+				Calculator.input_screen.innerHTML = Calculator.first_number;
+				console.log(Calculator.input_screen.innerHTML);
+			}
 			
-		
-		// if (str.match(/[+-/*]+[.]+?/g))
-		// 	Calculator.math_expression += '';		 
+			// Calculator.math_expression = Calculator.first_number;
+		console.log(Calculator.first_number);
+		// const l = Calculator.first_number.match(/^\d*\.?\d*$/g);
+		// 	 console.log(Calculator.first_number)
+		// 	 console.log(l);
 	}
 	clickNumber() {
 
@@ -77,8 +91,8 @@ class Calculator {
 				// Calculator.math_expression += button.innerHTML;
 				
 				this.inputChecker(button.innerHTML);
-				Calculator.input_screen.innerHTML = Calculator.math_expression;
-				this.stringParser(Calculator.math_expression);
+				// Calculator.input_screen.innerHTML = Calculator.math_expression;
+				// this.stringParser(Calculator.math_expression);
 			}));
 	}
 
@@ -86,6 +100,7 @@ class Calculator {
 		Calculator.input_screen.innerHTML = 0;
 		Calculator.ans_screen.innerHTML = '';	
 		Calculator.math_expression = '';
+		Calculator.first_number = '';
 	}
 
 	clear() {

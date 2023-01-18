@@ -1,37 +1,81 @@
 class Calculator {
-	static input_screen = document.getElementsByClassName('input_screen')[0];
-	static ans_screen = document.getElementsByClassName('ans_screen')[0];
-	static math_expression = '';
-	static first_number = '0';
-	static first_operator = '';
-	stringParser(str) {
-		const numbers_reg = /([0-9.]+|[+-=/*])+?/g;
-		const numbers = str.match(numbers_reg);
-		let ans = '';
-
-		if (numbers[3] != null) {
-		 	ans = this.operator(+numbers[0], +numbers[2], numbers[1]);
-		 	if (numbers[1] == '/' && numbers[2] == 0) {
-		 		Calculator.ans_screen.innerHTML = '';
-		 		Calculator.math_expression = ''; 
-				Calculator.input_screen.innerHTML = '';
-		 		alert('Division by zero'); 
-		 		return;
-		 	}
-		 	ans = this.numberChecker(ans);
-		 	if (numbers[3] == '=') {
-		 		Calculator.ans_screen.innerHTML = Calculator.math_expression +''+ ans;
-		 		Calculator.math_expression = ans; 
-				Calculator.input_screen.innerHTML = ans;
-		 	} else {
-				Calculator.math_expression = ans + numbers[3];
-				Calculator.input_screen.innerHTML = 0;
-				console.log(ans);
-				Calculator.ans_screen.innerHTML = ans + numbers[3];
-		 	}			
-		}
+	static previosOperand = '';
+	static operator = '';
+	static currentOperand = '0';
+	
+	constructor(inputScreen, outputScreen) {
+		this.inputScreen = inputScreen;
+		this.outputScreen = outputScreen;
 	}
 
+	setListeners() {
+		const numbers = document.querySelectorAll('[data-number]');
+		const operators = document.querySelectorAll('[data-operator]');
+		const equal = document.querySelector('[data-equals]');
+		numbers.forEach(button => button.addEventListener('click', () => this.addNumber(button.innerHTML)));
+		operators.forEach(button => button.addEventListener('click', () => this.addOperator(button.innerHTML)));
+		equal.addEventListener('click', () => this.makeResult());
+		
+	}
+
+	makeResult() {
+		if(Calculator.previosOperand != '' && Calculator.currentOperand != '') {
+			let res = this.operator(parseFloat(Calculator.previosOperand), parseFloat(Calculator.currentOperand), Calculator.operator);
+			console.log(Calculator.currentOperand)
+			this.outputScreen.innerHTML = `${Calculator.previosOperand} ${Calculator.operator} ${Calculator.currentOperand} = ${res}`
+			Calculator.previosOperand = res;
+			Calculator.currentOperand = '';
+		}
+	}
+	addOperator (button) {
+		
+		if(Calculator.operator !== '' && Calculator.currentOperand !== '' && Calculator.previosOperand !== '') {
+			console.log(Calculator.currentOperand);
+			console.log(Calculator.previosOperand);
+			console.log(Calculator.operator);
+			Calculator.previosOperand = this.operator(parseFloat(Calculator.previosOperand), parseFloat(Calculator.currentOperand), Calculator.operator);;
+			Calculator.currentOperand = '';
+			Calculator.operator = button;
+			console.log(Calculator.currentOperand);
+			this.outputScreen.innerHTML = `${Calculator.previosOperand} ${Calculator.operator}`;
+			this.inputScreen.innerHTML = Calculator.currentOperand;
+			return;
+		} 
+		if (Calculator.operator !== '' && Calculator.previosOperand !== '' && Calculator.currentOperand == '') {
+			Calculator.operator = button;
+			this.outputScreen.innerHTML = Calculator.previosOperand + Calculator.operator;
+			return;
+		}
+			
+			Calculator.previosOperand = Calculator.currentOperand;
+			Calculator.operator = button;
+			
+			this.outputScreen.innerHTML = Calculator.previosOperand + Calculator.operator;
+			Calculator.currentOperand = '';
+			this.inputScreen.innerHTML = '';
+			// if (Calculator.previosOperand != '' && Calculator.currentOperand != '0') {
+		
+			
+		
+	}
+	addNumber(button) {
+		
+		if (Calculator.currentOperand === '0' && button !== '.') { 
+			Calculator.currentOperand = button;
+			
+			this.inputScreen.innerHTML = Calculator.currentOperand;
+			return;
+		}
+		if (Calculator.currentOperand === ''  && button == '.') {
+			Calculator.currentOperand = '0';
+		}
+		console.log(typeof Calculator.currentOperand);
+		if (Calculator.currentOperand.includes('.') && button == '.'){
+			return;
+		}
+		Calculator.currentOperand += button;
+		this.inputScreen.innerHTML = Calculator.currentOperand;
+	}
 	setInputScreen(input) {
 		Calculator.input_screen.innerHTML = input;
 	}
@@ -48,53 +92,7 @@ class Calculator {
 			Calculator.input_screen.innerHTML = Calculator.input_screen.innerHTML.slice(0,-1);
 		});
 	}
-	inputChecker(button) {
-		if (Calculator.first_number.includes('.') && button == '.'){
-			Calculator.first_number += '';
-		} 
-		 else if(Calculator.first_number == '0' && button.match(/[0-9]/g)) {
-
-				Calculator.first_number = button;
-				Calculator.input_screen.innerHTML = button; 
-		 } 
-			else if (button.match(/[-+/*]/g)) {
-				Calculator.first_operator = button;
-				Calculator.ans_screen.innerHTML = Calculator.first_number 
-									+ Calculator.first_operator;
-				Calculator.first_number = '0';
-				Calculator.input_screen.innerHTML = '0';					
-			}
-			if (Calculator.ans_screen.innerHTML != '' && button.match(/[-+/*=]/g) ) {
-				console.log(1);
-					 Calculator.first_number = this.stringParser(Calculator.ans_screen.innerHTML+Calculator.first_number);
-					Calculator.input_screeen = Calculator.first_number;
-			}
-			else {
-				Calculator.first_number += button;
-				Calculator.input_screen.innerHTML = Calculator.first_number;
-				console.log(Calculator.input_screen.innerHTML);
-			}
-			
-			// Calculator.math_expression = Calculator.first_number;
-		console.log(Calculator.first_number);
-		// const l = Calculator.first_number.match(/^\d*\.?\d*$/g);
-		// 	 console.log(Calculator.first_number)
-		// 	 console.log(l);
-	}
-	clickNumber() {
-
-		const buttons = document.getElementsByClassName('btn');
-		[...buttons].forEach(button => button.addEventListener('click',(event) => {
-			if (button.value == 0) {
-				Calculator.input_screen.innerHTML = '';
-			}
-				// Calculator.math_expression += button.innerHTML;
-				
-				this.inputChecker(button.innerHTML);
-				// Calculator.input_screen.innerHTML = Calculator.math_expression;
-				// this.stringParser(Calculator.math_expression);
-			}));
-	}
+	
 
 	setStartValue() {
 		Calculator.input_screen.innerHTML = 0;
@@ -136,12 +134,13 @@ class Calculator {
 	}
 }
 function main() {
+	inputScreen = document.querySelector('[data-input]');
+	ansScreen = document.querySelector('[data-output]');
+	console.log(inputScreen);
+	const calculator = new Calculator(inputScreen, ansScreen);
+	calculator.setListeners();
 	
-	const calculator = new Calculator();
-
-	calculator.clickNumber();
-	calculator.clear();
-	calculator.deleteNumber();
-	console.log(Calculator.input_screen);
+}
+main();
 }
 main();

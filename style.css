@@ -4,6 +4,7 @@
     justify-content: center;
     flex-direction: column;
 }
+
 .screen {
     display: flex;
     flex-direction: column;
@@ -12,12 +13,19 @@
     padding: 25px 7px;
     text-align: right;
     font-size: 40px;
-    width: 400px;
+    width: 386px;
     border: solid;
-
+    border-width: 10px;
     border-color: #2196F3;
 }
+.btn {
+    transition: 0.2s;
+    border-radius: 10px;
+}
+.btn:hover {
+    background-color: lightgray;
 
+}
 .contatiner { 
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -35,4 +43,10 @@
 }
 .span-2 {
     grid-column: span 2;
+    transition: 0.5s;
+    border-radius: 10px;
+   
+}
+.span-2:hover {
+     background-color: lightgray;
 }

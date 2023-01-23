@@ -12,14 +12,34 @@ class Calculator {
 		const numbers = document.querySelectorAll('[data-number]');
 		const operators = document.querySelectorAll('[data-operator]');
 		const equal = document.querySelector('[data-equals]');
+		const clearAllButton = document.querySelector('[data-clear]');
+		const backButton = document.querySelector('[data-back]');
 		numbers.forEach(button => button.addEventListener('click', () => this.addNumber(button.innerHTML)));
 		operators.forEach(button => button.addEventListener('click', () => this.addOperator(button.innerHTML)));
 		equal.addEventListener('click', () => this.makeResult());
-		
+		clearAllButton.addEventListener('click', () => this.clearAll());
+		backButton.addEventListener('click', () => this.back());
 	}
+	clearAll() {
 
+		Calculator.previosOperand = '';
+		Calculator.currentOperand = '0';
+		Calculator.operator = '';
+		this.inputScreen.innerHTML = Calculator.currentOperand;
+		this.outputScreen.innerHTML = '';
+	}
+	back() {
+
+		Calculator.currentOperand = Calculator.currentOperand.slice(0, -1);
+		this.inputScreen.innerHTML = Calculator.currentOperand;
+	}
 	makeResult() {
-		if(Calculator.previosOperand != '' && Calculator.currentOperand != '') {
+		if (Calculator.currentOperand == 0 && Calculator.operator == '/') {
+			alert('division by zero');
+			this.clearAll();
+			return;
+		}
+		if (Calculator.previosOperand != '' && Calculator.currentOperand != '') {
 			let res = this.operator(parseFloat(Calculator.previosOperand), parseFloat(Calculator.currentOperand), Calculator.operator);
 			console.log(Calculator.currentOperand)
 			this.outputScreen.innerHTML = `${Calculator.previosOperand} ${Calculator.operator} ${Calculator.currentOperand} = ${res}`
@@ -30,13 +50,15 @@ class Calculator {
 	addOperator (button) {
 		
 		if(Calculator.operator !== '' && Calculator.currentOperand !== '' && Calculator.previosOperand !== '') {
-			console.log(Calculator.currentOperand);
-			console.log(Calculator.previosOperand);
-			console.log(Calculator.operator);
+			if (Calculator.currentOperand == 0 && Calculator.operator == '/') {
+			alert('division by zero');
+			this.clearAll();
+			return;
+		}
 			Calculator.previosOperand = this.operator(parseFloat(Calculator.previosOperand), parseFloat(Calculator.currentOperand), Calculator.operator);;
 			Calculator.currentOperand = '';
 			Calculator.operator = button;
-			console.log(Calculator.currentOperand);
+			
 			this.outputScreen.innerHTML = `${Calculator.previosOperand} ${Calculator.operator}`;
 			this.inputScreen.innerHTML = Calculator.currentOperand;
 			return;
@@ -46,13 +68,17 @@ class Calculator {
 			this.outputScreen.innerHTML = Calculator.previosOperand + Calculator.operator;
 			return;
 		}
-			
+
 			Calculator.previosOperand = Calculator.currentOperand;
 			Calculator.operator = button;
 			
 			this.outputScreen.innerHTML = Calculator.previosOperand + Calculator.operator;
 			Calculator.currentOperand = '';
 			this.inputScreen.innerHTML = '';
+
+		
+			console.log(Calculator.operator, Calculator.currentOperand, Calculator.previosOperand);
+		// 	
 			// if (Calculator.previosOperand != '' && Calculator.currentOperand != '0') {
 		
 			
@@ -69,6 +95,7 @@ class Calculator {
 		if (Calculator.currentOperand === ''  && button == '.') {
 			Calculator.currentOperand = '0';
 		}
+
 		console.log(typeof Calculator.currentOperand);
 		if (Calculator.currentOperand.includes('.') && button == '.'){
 			return;
@@ -94,21 +121,8 @@ class Calculator {
 	}
 	
 
-	setStartValue() {
-		Calculator.input_screen.innerHTML = 0;
-		Calculator.ans_screen.innerHTML = '';	
-		Calculator.math_expression = '';
-		Calculator.first_number = '';
-	}
-
-	clear() {
-		const clear_button = document.getElementsByClassName('cleaner')[0];
-		clear_button.addEventListener('click', () =>{
-				this.setStartValue();
-		})
-	}
-
 	operator(num1, num2, operator) {
+
 		switch(operator) {
 			case '+': return this.add(num1, num2)
 			case '-': return this.substract(num1, num2)
@@ -118,19 +132,20 @@ class Calculator {
 	}
 
 	add(a, b) {
-		return a + b;
+		return (a + b).toFixed(2); ;
 	}
 
 	substract(a, b) {
-		return a - b;
+		return (a - b).toFixed(2); ;
 	}
 
 	multiply(a, b) {
-		return a * b;
+		return (a * b).toFixed(2); ;
 	}
 
 	devide(a, b) {
-		return a / b; 
+		
+		return (a / b).toFixed(2); 
 	}
 }
 function main() {
@@ -141,6 +156,5 @@ function main() {
 	calculator.setListeners();
 	
 }
-main();
-}
+
 main();
